@@ -1,12 +1,9 @@
 export default {
   async fetch(request) {
-    const url = new URL(request.url);
-    // proxy your existing index.html
-    const target = "https://oliviaai-tgdk.github.io" + url.pathname + url.search;
-    const res = await fetch(target);
-    return new Response(res.body, {
-      status: res.status,
-      headers: { "content-type": "text/html; charset=utf-8" }
+    // change this to your real repo if needed
+    const r = await fetch("https://oliviaai-tgdk.github.io/");
+    return new Response(await r.text(), {
+      headers: { "content-type": "text/html;charset=UTF-8", "cache-control": "no-cache" }
     });
   }
 }
