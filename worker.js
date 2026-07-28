@@ -2,35 +2,23 @@ export default {
   async fetch(request) {
     const url = new URL(request.url);
     
-    // Origin where your real index.html lives
-    const ORIGIN = "https://oliviaai-tgdk.github.io";
+    // THIS is where your big index.html lives
+    const ORIGIN_BASE = "https://oliviaai-tgdk.github.io";
 
-    // Build origin URL with same path
-    let originUrl = ORIGIN + url.pathname;
-    if (url.pathname === "/" || url.pathname === "") {
-      originUrl = ORIGIN + "/";
-    }
-    originUrl += url.search;
+    // keep the same path (/ or /about etc)
+    let target = ORIGIN_BASE + url.pathname + url.search;
+    if (url.pathname === "/" || url.pathname === "") target = ORIGIN_BASE + "/" + url.search;
 
-    let res = await fetch(originUrl, {
-      headers: {
-        "User-Agent": request.headers.get("User-Agent") || "TGDK-Worker",
-        "Accept": request.headers.get("Accept") || "*/*",
-      },
-      cf: { cacheTtl: 60, cacheEverything: true }
-    });
-
-    // Clone response so we can edit headers
-    let newHeaders = new Headers(res.headers);
-    newHeaders.set("Cache-Control", "public, max-age=60");
-    newHeaders.set("X-Robots-Tag", "noindex"); // remove if you want indexing
-    newHeaders.delete("content-security-policy");
-    newHeaders.delete("clear-site-data");
-
+    const res = await fetch(target, { cf: { cacheTtl: 60 } });
+    
+    // return as-is, streaming — works even if index.html is 10MB
     return new Response(res.body, {
       status: res.status,
-      statusText: res.statusText,
-      headers: newHeaders
+      headers: {
+        "content-type": res.headers.get("content-type") || "text/html;charset=UTF-8",
+        "cache-control": "public, max-age=60",
+        "access-control-allow-origin": "*"
+      }
     });
   }
 }
