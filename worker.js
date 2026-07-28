@@ -3,7 +3,7 @@ export default {
     const url = new URL(request.url);
     
     // THIS is where your big index.html lives
-    const ORIGIN_BASE = "https://oliviaai-tgdk.github.io";
+    const ORIGIN_BASE = "https://oliviaai-tgdk.github.io/tgdkneets";
 
     // keep the same path (/ or /about etc)
     let target = ORIGIN_BASE + url.pathname + url.search;
