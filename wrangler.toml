@@ -1,0 +1,9 @@
+name = "tgdk-io"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[env.production]
+routes = [
+  { pattern = "tgdk.io/*", zone_name = "tgdk.io" },
+  { pattern = "www.tgdk.io/*", zone_name = "tgdk.io" }
+]
